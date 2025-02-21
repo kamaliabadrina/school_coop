@@ -1,0 +1,32 @@
+<div class="container">
+  <h2>Your Cart</h2>
+
+  <% if user_signed_in? %>
+    <% if @cart && @cart.cart_items.any? %>
+      <ul>
+        <% @cart.cart_items.each do |item| %>
+          <li>
+            <%= item.product.name %> - Quantity: <%= item.quantity %>
+            <%= button_to "Remove", remove_item_cart_path(id: item.id), method: :delete, data: { confirm: "Are you sure?" } %>
+          </li>
+        <% end %>
+      </ul>
+      <%= link_to "Checkout", checkout_path, class: "btn btn-success" %>
+    <% else %>
+      <p>Your cart is empty.</p>
+    <% end %>
+  <% else %>
+    <% if @cart_items.any? %>
+      <ul>
+        <% @cart_items.each do |item| %>
+          <li>
+            <%= item.product.name %> - Quantity: <%= item.quantity %>
+            <%= button_to "Remove", remove_item_cart_path(id: item.product.id), method: :delete, data: { confirm: "Are you sure?" } %>
+          </li>
+        <% end %>
+      </ul>
+    <% else %>
+      <p>Your cart is empty.</p>
+    <% end %>
+  <% end %>
+</div>

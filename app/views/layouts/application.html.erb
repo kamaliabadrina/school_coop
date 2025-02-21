@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+   <%= csrf_meta_tags %>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+  <title>School Cooperative</title>
+  <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
+  <%= javascript_include_tag "application", "data-turbo-track": "reload" %>
+  <%= csp_meta_tag %>
+
+
+  <style>
+    html, body {
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+    }
+    .content {
+      flex: 1;
+    }
+    footer {
+      margin-top: auto;
+    }
+
+    .cart-icon {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      width: 60px;
+      height: 60px;
+      background-color: #007bff;
+      border-radius: 50%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: white;
+      font-size: 24px;
+      text-decoration: none;
+    }
+    .cart-icon:hover {
+      background-color: #0056b3;
+    }
+
+  </style>
+</head>
+<body>
+  <!-- Navigation Bar -->
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container">
+      <a class="navbar-brand" href="<%= root_path %>">School Cooperative</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ms-auto">
+          <% if user_signed_in? %>
+            <li class="nav-item"><a class="nav-link" href="<%= root_path %>">Home</a></li>
+            <li class="nav-item"><a class="nav-link" href="<%= orders_path %>">Orders</a></li>
+            <li class="nav-item"><%= link_to "Profile", profile_path, class: "nav-link" %></li>
+            <li class="nav-item"><a class="nav-link" data-method="delete" href="/users/sign_out">Logout</a></li>
+          <% else %>
+            <%= link_to cart_path, class: "cart-icon" do %>
+              <i class="fas fa-shopping-cart"></i>
+            <% end %>
+            <li class="nav-item"><a class="nav-link" href="<%= root_path %>">Home</a></li>
+            <li class="nav-item"><%= link_to 'Login', new_user_session_path, class: 'nav-link' %></li>
+          <% end %>
+         
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Main Content -->
+  <div class="container my-4 content">
+    <%= yield %>
+  </div>
+
+  <!-- Footer -->
+  <footer class="bg-dark text-white text-center py-3">
+    <div class="container">
+      <p>© <%= Time.now.year %> School Cooperative. All rights reserved.</p>
+    </div>
+  </footer>
+
+
+
+  <!-- Bootstrap JS and dependencies -->
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

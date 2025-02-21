@@ -1,0 +1,99 @@
+<%= form_with(model: product) do |form| %>
+  <% if product.errors.any? %>
+    <div style="color: red">
+      <h2><%= pluralize(product.errors.count, "error") %> prohibited this product from being saved:</h2>
+      <ul>
+        <% product.errors.each do |error| %>
+          <li><%= error.full_message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div>
+    <%= form.label :name %>
+    <%= form.text_field :name %>
+  </div>
+
+  <div>
+    <%= form.label :price %>
+    <%= form.text_field :price %>
+  </div>
+
+  <div>
+    <%= form.label :stock %>
+    <%= form.number_field :stock %>
+  </div>
+
+  <div>
+    <%= form.label :image %>
+    <%= form.file_field :image %> <!-- Image upload field -->
+  </div>
+
+  <div id="options">
+    <h3>Product Options</h3>
+    <%= form.fields_for :product_options do |option_form| %>
+      <div class="option">
+        <%= option_form.label :name, "Option Name" %>
+        <%= option_form.text_field :name %>
+
+        <h4>Values</h4>
+        <div class="option_values">
+          <%= option_form.fields_for :product_option_values do |value_form| %>
+            <div class="value">
+              <%= value_form.label :value, "Value" %>
+              <%= value_form.text_field :value %>
+              <%= value_form.check_box :_destroy %>
+              <%= value_form.label :_destroy, "Remove this value" %>
+            </div>
+          <% end %>
+        </div>
+
+        <button type="button" class="add_value">Add Value</button>
+        <%= option_form.check_box :_destroy %>
+        <%= option_form.label :_destroy, "Remove this option" %>
+      </div>
+    <% end %>
+  </div>
+
+  <button type="button" id="add_option">Add Option</button>
+
+  <div>
+    <%= form.submit %>
+  </div>
+<% end %>
+
+<script>
+document.getElementById("add_option").addEventListener("click", function() {
+  const optionsDiv = document.getElementById("options");
+  const newOption = document.createElement("div");
+  newOption.classList.add("option");
+  newOption.innerHTML = `
+    <label>Option Name</label>
+    <input type="text" name="product[product_options_attributes][][name]">
+    <h4>Values</h4>
+    <div class="option_values">
+      <input type="text" name="product[product_options_attributes][][product_option_values_attributes][][value]" placeholder="Value">
+    </div>
+    <button type="button" class="add_value">Add Value</button>
+    <input type="checkbox" name="product[product_options_attributes][][_destroy]"> Remove this option
+  `;
+  optionsDiv.appendChild(newOption);
+});
+
+// Add event listener for dynamically added "Add Value" buttons
+document.addEventListener('click', function(event) {
+  if (event.target.classList.contains('add_value')) {
+    const optionDiv = event.target.closest('.option');
+    const valuesDiv = optionDiv.querySelector('.option_values');
+    const newValue = document.createElement('div');
+    newValue.classList.add('value');
+    newValue.innerHTML = `
+      <label>Value</label>
+      <input type="text" name="product[product_options_attributes][][product_option_values_attributes][][value]" placeholder="Value">
+      <input type="checkbox" name="product[product_options_attributes][][product_option_values_attributes][][_destroy]"> Remove this value
+    `;
+    valuesDiv.appendChild(newValue);
+  }
+});
+</script>
