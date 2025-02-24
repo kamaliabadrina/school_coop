@@ -35,7 +35,7 @@
               <%= link_to "Edit", edit_product_path(@product), class: "btn btn-primary" %>
             <% else %>
               <!-- Guest View: Buy Button -->
-              <%= form_with url: buy_product_path(@product), method: :post do |form| %>
+              <%= form_with(url: buy_product_path(@product), method: :post, scope: :order) do |form| %>
                 <div class="form-group">
                   <%= form.label :kid_name, "Child's Name" %>
                   <%= form.text_field :kid_name, class: "form-control", required: true %>
@@ -53,7 +53,7 @@
                   <%= form.number_field :quantity, value: 1, min: 1, class: "form-control", required: true %>
                 </div>
                 <div class="d-flex justify-content-between">
-                  <%= form.submit "Buy Now", class: "btn btn-primary" %>
+                  <%= form.submit "Buy Now", class: "btn btn-success" %>
                   <%= button_to "Add to Cart", add_item_cart_path, method: :post, params: { product_id: @product.id, quantity: 1 }, class: "btn btn-warning" %>
                 </div>
               <% end %>

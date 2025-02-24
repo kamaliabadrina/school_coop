@@ -1,5 +1,6 @@
 class ProductsController < ApplicationController
-  before_action :set_product, only: %i[show edit update destroy buy]
+  before_action :set_product, only: [:show, :edit, :update, :destroy, :buy]
+  skip_before_action :authenticate_user!, only: [:index, :show, :buy]
 
   # GET /products or /products.json
   def index
@@ -8,6 +9,7 @@ class ProductsController < ApplicationController
 
   # GET /products/1 or /products/1.json
   def show
+    @product = Product.find(params[:id])
   end
 
   # GET /products/new
@@ -58,27 +60,33 @@ class ProductsController < ApplicationController
   end
 
   # POST /products/1/buy
+ # POST /products/1/buy
   def buy
-    @product = Product.find(params[:id]) # Find the product by its ID
+    Rails.logger.info("Received parameters: #{params.inspect}")
 
-    # Create a new order
-    order = Order.new(order_params)
-    order.product = @product
-    order.status = 'Pending' # You can set the initial status here
+    @order = Order.new(order_params)
+    @order.product = @product # Associate the order with the product
 
-    if order.save
-      flash[:notice] = "Order placed successfully!"
-      redirect_to products_path # Redirect to products index or any other page
+    # Only set the user if there is a current user
+    @order.user = current_user if user_signed_in?
+
+    if @order.save
+      redirect_to product_path(@product), notice: 'Order was successfully created.'
     else
-      flash[:alert] = "Error placing order. Please try again."
-      render :show # Render the product show view to try again
+      flash.now[:alert] = 'There was a problem creating the order. Please check your inputs.'
+      Rails.logger.info("Order errors: #{@order.errors.full_messages}")
+      render :show
     end
   end
 
   private
 
   def set_product
-    @product = Product.find(params[:id])
+    @product = Product.find_by(id: params[:id])
+    unless @product
+      flash[:alert] = "Product not found."
+      redirect_to products_path
+    end
   end
 
   def product_params
