@@ -65,13 +65,10 @@ class ProductsController < ApplicationController
     Rails.logger.info("Received parameters: #{params.inspect}")
 
     @order = Order.new(order_params)
-    @order.product = @product # Associate the order with the product
-
-    # Only set the user if there is a current user
-    @order.user = current_user if user_signed_in?
+    @order.product = @product 
 
     if @order.save
-      redirect_to product_path(@product), notice: 'Order was successfully created.'
+      redirect_to success_orders_path, notice: 'Your order was placed successfully!'
     else
       flash.now[:alert] = 'There was a problem creating the order. Please check your inputs.'
       Rails.logger.info("Order errors: #{@order.errors.full_messages}")

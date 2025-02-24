@@ -2,9 +2,13 @@ Rails.application.routes.draw do
   devise_for :users
   root "products#index"
 
-  resources :users  # No need for the duplicate only: [:show]
+  resources :users  
   resources :products
-  resources :orders
+  resources :orders, only: [:index, :new, :create, :edit, :update, :destroy] do
+    collection do
+      get :success # Route for the success page
+    end
+  end
   resource :profile, only: [:show, :edit, :update]
 
   # Cart Routes
@@ -17,9 +21,6 @@ Rails.application.routes.draw do
     post 'buy', on: :member # This creates a route for /products/:id/buy
   end
   
-  resources :orders
-
   # Health Check Route
   get "up" => "rails/health#show", as: :rails_health_check
-  
 end

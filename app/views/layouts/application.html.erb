@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-   <%= csrf_meta_tags %>
+  <%= csrf_meta_tags %>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
@@ -10,7 +10,6 @@
   <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
   <%= javascript_include_tag "application", "data-turbo-track": "reload" %>
   <%= csp_meta_tag %>
-
 
   <style>
     html, body {
@@ -43,7 +42,6 @@
     .cart-icon:hover {
       background-color: #0056b3;
     }
-
   </style>
 </head>
 <body>
@@ -51,7 +49,7 @@
   <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
     <div class="container">
       <a class="navbar-brand" href="<%= root_path %>">School Cooperative</a>
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav">
         <span class="navbar-toggler-icon"></span>
       </button>
       <div class="collapse navbar-collapse" id="navbarNav">
@@ -68,7 +66,6 @@
             <li class="nav-item"><a class="nav-link" href="<%= root_path %>">Home</a></li>
             <li class="nav-item"><%= link_to 'Login', new_user_session_path, class: 'nav-link' %></li>
           <% end %>
-         
         </ul>
       </div>
     </div>
@@ -85,8 +82,6 @@
       <p>© <%= Time.now.year %> School Cooperative. All rights reserved.</p>
     </div>
   </footer>
-
-
 
   <!-- Bootstrap JS and dependencies -->
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
