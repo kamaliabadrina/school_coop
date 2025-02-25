@@ -15,26 +15,29 @@
           <p class="card-text"><strong>Price:</strong> <%= number_to_currency(@product.price) %></p>
           <p class="card-text"><strong>Stock:</strong> <%= @product.stock %></p>
 
-          <% if @product.product_options.any? %>
-            <h5>Product Options:</h5>
-            <% @product.product_options.each do |option| %>
-              <p><strong><%= option.name %>:</strong></p>
-              <ul>
-                <% option.product_option_values.each do |value| %>
-                  <li><%= value.value %></li>
-                <% end %>
-              </ul>
-            <% end %>
-          <% end %>
-
           <div class="d-flex flex-column flex-md-row justify-content-between mt-3">
             <!-- Form for adding to cart -->
             <%= form_with url: add_item_cart_path, method: :post, local: true do |form| %>
               <%= form.hidden_field :product_id, value: @product.id %>
-              <div class="form-group">
+              
+              <% if @product.product_options.any? %>
+                <h5>Select Options:</h5>
+                <% @product.product_options.each do |option| %>
+                  <p><strong><%= option.name %>:</strong></p>
+                  <% option.product_option_values.each do |value| %>
+                    <label>
+                      <%= form.radio_button "options[#{option.name}]", value.value %>
+                      <%= value.value %>
+                    </label><br>
+                  <% end %>
+                <% end %>
+              <% end %>
+
+              <div class="form-group mt-3">
                 <%= form.label :quantity, "Quantity" %>
                 <%= form.number_field :quantity, value: 1, min: 1, class: "form-control", required: true %>
               </div>
+
               <div class="mt-2">
                 <%= form.submit "Add to Cart", class: "btn btn-warning" %>
               </div>

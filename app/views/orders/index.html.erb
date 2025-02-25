@@ -8,6 +8,7 @@
       <th>Payment Information</th>
       <th>Product</th>
       <th>Quantity</th>
+      <th>Options</th>
       <th>Status</th>
       <th>Created At</th>
     </tr>
@@ -20,6 +21,15 @@
         <td><%= order.payment_info %></td>
         <td><%= order.product.name %></td>
         <td><%= order.quantity %></td>
+        <td>
+          <% if order.options.present? %>
+            <% JSON.parse(order.options).each do |option, value| %>
+              <p><strong><%= option %>:</strong> <%= value %></p>
+            <% end %>
+          <% else %>
+            <p>No options selected</p>
+          <% end %>
+        </td>
         <td><%= order.status %></td>
         <td><%= order.created_at.strftime("%B %d, %Y") %></td>
       </tr>

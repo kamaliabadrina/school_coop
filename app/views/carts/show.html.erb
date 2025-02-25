@@ -7,7 +7,18 @@
       <ul class="list-group">
         <% @cart_items.each do |item| %>
           <li class="list-group-item d-flex justify-content-between align-items-center">
-            <%= item.product.name %> - Quantity: <%= item.quantity %>
+            <div>
+              <strong><%= item.product.name %></strong> - Quantity: <%= item.quantity %>
+
+              <% if item.respond_to?(:options) && item.options.present? %>
+                <p><strong>Selected Options:</strong></p>
+                <ul>
+                  <% JSON.parse(item.options).each do |option, value| %>
+                    <li><%= option %>: <%= value %></li>
+                  <% end %>
+                </ul>
+              <% end %>
+            </div>
             <%= button_to "Remove", remove_item_cart_path(id: item.id), method: :delete, data: { confirm: "Are you sure?" }, class: "btn btn-danger btn-sm" %>
           </li>
         <% end %>
@@ -21,7 +32,18 @@
       <ul class="list-group">
         <% @cart_items.each do |item| %>
           <li class="list-group-item d-flex justify-content-between align-items-center">
-            <%= item.product.name %> - Quantity: <%= item.quantity %>
+            <div>
+              <strong><%= item.product.name %></strong> - Quantity: <%= item.quantity %>
+
+              <% if item.respond_to?(:options) && item.options.present? %>
+                <p><strong>Selected Options:</strong></p>
+                <ul>
+                  <% JSON.parse(item.options).each do |option, value| %>
+                    <li><%= option %>: <%= value %></li>
+                  <% end %>
+                </ul>
+              <% end %>
+            </div>
             <%= button_to "Remove", remove_item_cart_path(product_id: item.id), method: :delete, data: { confirm: "Are you sure?" }, class: "btn btn-danger btn-sm" %>
           </li>
         <% end %>
