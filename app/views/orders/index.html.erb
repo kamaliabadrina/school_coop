@@ -1,5 +1,12 @@
 <h1>Orders</h1>
 
+<%= form_with url: orders_path, method: :get, local: true do %>
+  <div class="input-group mb-3">
+    <input type="text" name="search" class="form-control" placeholder="Search orders..." value="<%= params[:search] %>">
+    <button type="submit" class="btn btn-primary">Search</button>
+  </div>
+<% end %>
+
 <table class="table">
   <thead>
     <tr>
@@ -10,6 +17,7 @@
       <th>Quantity</th>
       <th>Options</th>
       <th>Status</th>
+      <th>Actions</th> <!-- Add actions column -->
       <th>Created At</th>
     </tr>
   </thead>
@@ -25,13 +33,17 @@
           <% if order.options.present? %>
             <% order.options.each do |option, value| %>
               <p><strong><%= option %>:</strong> <%= value %></p>
-          <% end %>
+            <% end %>
           <% else %>
             <p>No options selected</p>
           <% end %>
         </td>
-
         <td><%= order.status %></td>
+        <td>
+          <% if order.status == 'pending' %>
+            <%= button_to 'Mark as Complete', update_status_order_path(order), method: :patch, data: { confirm: 'Are you sure you want to mark this order as complete?' } %>
+          <% end %>
+        </td>
         <td><%= order.created_at.strftime("%B %d, %Y") %></td>
       </tr>
     <% end %>

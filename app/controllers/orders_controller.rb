@@ -5,6 +5,15 @@ class OrdersController < ApplicationController
   # GET /orders
   def index
     @orders = Order.all
+
+    if params[:search].present?
+      search_term = "%#{params[:search]}%"
+      @orders = @orders.joins(:product).where(
+        "orders.kid_name ILIKE ? OR orders.kid_class ILIKE ? OR orders.status ILIKE ? OR products.name ILIKE ?",
+        search_term, search_term, search_term, search_term
+      )
+    end
+
   end
 
   # GET /orders/success

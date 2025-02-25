@@ -69,7 +69,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_02_25_025513) do
     t.string "kid_name"
     t.string "kid_class"
     t.string "payment_info"
-    t.json "options"
+    t.jsonb "options", default: {}
     t.index ["product_id"], name: "index_orders_on_product_id"
     t.index ["user_id"], name: "index_orders_on_user_id"
   end
