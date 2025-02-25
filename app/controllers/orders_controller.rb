@@ -1,6 +1,6 @@
 class OrdersController < ApplicationController
   skip_before_action :authenticate_user!, only: [:new, :create, :success]
-  before_action :set_order, only: [:edit, :update, :destroy] # Removed `show` since it's not used
+  before_action :set_order, only: [:edit, :update, :destroy]
 
   # GET /orders
   def index
@@ -25,7 +25,7 @@ class OrdersController < ApplicationController
     @order = Order.new(order_params)
 
     if @order.save
-      redirect_to success_orders_path, notice: "Order was successfully placed." # Redirect to success page
+      redirect_to success_orders_path, notice: "Order was successfully placed."
     else
       render :new, status: :unprocessable_entity
     end
@@ -48,7 +48,6 @@ class OrdersController < ApplicationController
 
   private
 
-    # Use callbacks to share common setup or constraints between actions.
     def set_order
       @order = Order.find_by(id: params[:id])
       unless @order
@@ -57,8 +56,7 @@ class OrdersController < ApplicationController
       end
     end
 
-    # Only allow trusted parameters.
     def order_params
-      params.require(:order).permit(:user_id, :product_id, :quantity, :status)
+      params.require(:order).permit(:user_id, :product_id, :quantity, :status, :kid_name, :kid_class, :payment_info, options: {})
     end
 end

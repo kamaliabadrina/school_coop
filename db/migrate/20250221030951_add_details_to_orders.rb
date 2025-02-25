@@ -3,5 +3,6 @@ class AddDetailsToOrders < ActiveRecord::Migration[8.0]
     add_column :orders, :kid_name, :string
     add_column :orders, :kid_class, :string
     add_column :orders, :payment_info, :string
+    add_column :orders, :options, :json
   end
 end

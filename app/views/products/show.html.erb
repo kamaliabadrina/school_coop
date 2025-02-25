@@ -43,29 +43,43 @@
               </div>
             <% end %>
 
-            <!-- Buy Now form -->
-            <%= form_with url: buy_product_path(@product), method: :post, scope: :order, local: true do |form| %>
-              <div class="form-group">
-                <%= form.label :kid_name, "Child's Name" %>
-                <%= form.text_field :kid_name, class: "form-control", required: true %>
-              </div>
-              <div class="form-group">
-                <%= form.label :kid_class, "Child's Class" %>
-                <%= form.text_field :kid_class, class: "form-control", required: true %>
-              </div>
-              <div class="form-group">
-                <%= form.label :payment_info, "Payment Information" %>
-                <%= form.text_field :payment_info, class: "form-control", required: true %>
-              </div>
-              <div class="form-group">
-                <%= form.label :quantity, "Quantity" %>
-                <%= form.number_field :quantity, value: 1, min: 1, class: "form-control", required: true %>
-              </div>
-              <div class="mt-2">
-                <%= form.submit "Buy Now", class: "btn btn-success" %>
-              </div>
-            <% end %>
-          </div>
+          <%= form_with url: buy_product_path(@product), method: :post, scope: :order, local: true do |form| %>
+  <div class="form-group">
+    <%= form.label :kid_name, "Child's Name" %>
+    <%= form.text_field :kid_name, class: "form-control", required: true %>
+  </div>
+  <div class="form-group">
+    <%= form.label :kid_class, "Child's Class" %>
+    <%= form.text_field :kid_class, class: "form-control", required: true %>
+  </div>
+  <div class="form-group">
+    <%= form.label :payment_info, "Payment Information" %>
+    <%= form.text_field :payment_info, class: "form-control", required: true %>
+  </div>
+
+  <% if @product.product_options.any? %>
+    <h5>Select Options:</h5>
+    <% @product.product_options.each do |option| %>
+      <p><strong><%= option.name %>:</strong></p>
+      <% option.product_option_values.each do |value| %>
+        <label>
+          <%= form.radio_button "options[#{option.name}]", value.value %>
+          <%= value.value %>
+        </label><br>
+      <% end %>
+    <% end %>
+  <% end %>
+
+  <div class="form-group">
+    <%= form.label :quantity, "Quantity" %>
+    <%= form.number_field :quantity, value: 1, min: 1, class: "form-control", required: true %>
+  </div>
+
+  <div class="mt-2">
+    <%= form.submit "Buy Now", class: "btn btn-success" %>
+  </div>
+<% end %>
+
 
           <!-- Back button -->
           <div class="mt-3">

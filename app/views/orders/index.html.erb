@@ -23,7 +23,7 @@
         <td><%= order.quantity %></td>
         <td>
           <% if order.options.present? %>
-            <% JSON.parse(order.options).each do |option, value| %>
+            <% order.options.each do |option, value| %>
               <p><strong><%= option %>:</strong> <%= value %></p>
             <% end %>
           <% else %>
