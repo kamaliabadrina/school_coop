@@ -6,21 +6,21 @@ Rails.application.routes.draw do
   resources :products
   resources :orders, only: [:index, :new, :create, :edit, :update, :destroy] do
     collection do
-      get :success # Route for the success page
+      get :success
     end
   end
+
   resource :profile, only: [:show, :edit, :update]
 
   # Cart Routes
   resource :cart, only: [:show] do
     post 'add_item', to: 'carts#add_item'
-    delete 'remove_item/:id', to: 'carts#remove_item', as: 'remove_item'
+    delete 'remove_item', to: 'carts#remove_item', as: 'remove_item' # Removed :id from route
   end
 
   resources :products do
-    post 'buy', on: :member # This creates a route for /products/:id/buy
+    post 'buy', on: :member
   end
-  
-  # Health Check Route
+
   get "up" => "rails/health#show", as: :rails_health_check
 end

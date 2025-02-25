@@ -1,27 +1,28 @@
 <div class="container">
   <h2>Your Cart</h2>
+  <p style="color: green"><%= notice %></p>
 
   <% if user_signed_in? %>
-    <% if @cart && @cart.cart_items.any? %>
-      <ul>
-        <% @cart.cart_items.each do |item| %>
-          <li>
+    <% if @cart_items.any? %>
+      <ul class="list-group">
+        <% @cart_items.each do |item| %>
+          <li class="list-group-item d-flex justify-content-between align-items-center">
             <%= item.product.name %> - Quantity: <%= item.quantity %>
-            <%= button_to "Remove", remove_item_cart_path(id: item.id), method: :delete, data: { confirm: "Are you sure?" } %>
+            <%= button_to "Remove", remove_item_cart_path(id: item.id), method: :delete, data: { confirm: "Are you sure?" }, class: "btn btn-danger btn-sm" %>
           </li>
         <% end %>
       </ul>
-      <%= link_to "Checkout", checkout_path, class: "btn btn-success" %>
+      <%= link_to "Checkout", checkout_path, class: "btn btn-success mt-3" %>
     <% else %>
       <p>Your cart is empty.</p>
     <% end %>
   <% else %>
     <% if @cart_items.any? %>
-      <ul>
+      <ul class="list-group">
         <% @cart_items.each do |item| %>
-          <li>
+          <li class="list-group-item d-flex justify-content-between align-items-center">
             <%= item.product.name %> - Quantity: <%= item.quantity %>
-            <%= button_to "Remove", remove_item_cart_path(id: item.product.id), method: :delete, data: { confirm: "Are you sure?" } %>
+            <%= button_to "Remove", remove_item_cart_path(product_id: item.id), method: :delete, data: { confirm: "Are you sure?" }, class: "btn btn-danger btn-sm" %>
           </li>
         <% end %>
       </ul>
