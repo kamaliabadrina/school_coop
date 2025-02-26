@@ -46,25 +46,21 @@ class OrdersController < ApplicationController
 
   def create
     @order = Order.new(order_params)
-    @order.options = params[:order][:options] if params[:order][:options].present?
-  
-    # Find the product using the product_id from the order_params
     product = Product.find_by(id: params[:order][:product_id])
   
     if product
-      # Set the order price to the product price
       @order.price = product.price
     else
-      # Handle the case where the product is not found
       flash[:alert] = "Product not found."
       render :new, status: :unprocessable_entity and return
     end
   
     if @order.save
-      redirect_to @order, notice: "Order successfully created."    
+      Rails.logger.debug "Order Params: #{order_params.inspect}"
+      # Send order confirmation email in background
+      OrderConfirmationJob.perform_later(@order.id)
+      redirect_to success_orders_path, notice: "Order was successfully placed. A confirmation email has been sent."
     else
-      puts "❌ ORDER FAILED: #{@order.errors.full_messages}"  # Debugging
-      flash[:alert] = "Failed to place order: #{@order.errors.full_messages.join(", ")}"
       render :new, status: :unprocessable_entity
     end
   end
@@ -98,6 +94,6 @@ class OrdersController < ApplicationController
     private
 
     def order_params
-      params.require(:order).permit(:email, :kid_name, :kid_class, :payment_info, :product_id, :quantity, :price)
-    end    
+      params.require(:order).permit(:user_id, :product_id, :quantity, :status, :kid_name, :kid_class, :payment_info, :email, options: {})
+    end     
 end

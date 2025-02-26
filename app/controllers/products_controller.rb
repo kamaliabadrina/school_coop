@@ -67,11 +67,12 @@ class ProductsController < ApplicationController
     @order.product = @product 
 
     if @order.save
-      redirect_to success_orders_path, notice: 'Your order was placed successfully!'
+      Rails.logger.debug "Order Params: #{order_params.inspect}"
+      # Send order confirmation email in background
+      OrderConfirmationJob.perform_later(@order.id)
+      redirect_to success_orders_path, notice: "Order was successfully placed. A confirmation email has been sent."
     else
-      flash.now[:alert] = 'There was a problem creating the order. Please check your inputs.'
-      Rails.logger.info("Order errors: #{@order.errors.full_messages}")
-      render :show
+      render :new, status: :unprocessable_entity
     end
   end
 
@@ -91,6 +92,6 @@ class ProductsController < ApplicationController
 
   def order_params
     # Permit the parameters coming from the form
-    params.require(:order).permit(:kid_name, :kid_class, :payment_info, :quantity)
+      params.require(:order).permit(:user_id, :product_id, :quantity, :status, :kid_name, :price, :kid_class, :payment_info, :email, options: {})
   end
 end

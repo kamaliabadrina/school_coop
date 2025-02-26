@@ -31,8 +31,10 @@
     <tr>
       <th>Child's Name</th>
       <th>Child's Class</th>
+      <th>Email</th>
       <th>Payment Information</th>
       <th>Product</th>
+      <th>Price</th>
       <th>Quantity</th>
       <th>Options</th>
       <th>Status</th>
@@ -45,8 +47,10 @@
       <tr>
         <td><%= order.kid_name %></td>
         <td><%= order.kid_class %></td>
+        <td><%= order.email %></td>
         <td><%= order.payment_info %></td>
         <td><%= order.product.name %></td>
+        <td><%= order.product.price %></td>
         <td><%= order.quantity %></td>
         <td>
           <% if order.options.present? %>

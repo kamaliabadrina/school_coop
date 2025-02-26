@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_02_25_025513) do
+ActiveRecord::Schema[8.0].define(version: 2025_02_26_014118) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -70,6 +70,8 @@ ActiveRecord::Schema[8.0].define(version: 2025_02_25_025513) do
     t.string "kid_class"
     t.string "payment_info"
     t.jsonb "options", default: {}
+    t.decimal "price"
+    t.string "email"
     t.index ["product_id"], name: "index_orders_on_product_id"
     t.index ["user_id"], name: "index_orders_on_user_id"
   end

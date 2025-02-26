@@ -1,0 +1,12 @@
+<h1>Order Confirmation</h1>
+<p>Dear Parent,</p>
+<p>Thank you for your order!</p>
+<p><strong>Order Details:</strong></p>
+<ul>
+  <li><strong>Product:</strong> <%= @order.product.name %></li>
+  <li><strong>Quantity:</strong> <%= @order.quantity %></li>
+  <li><strong>Price:</strong> <%= number_to_currency(@order.price) %></li>
+  <li><strong>Child's Name:</strong> <%= @order.kid_name %></li>
+  <li><strong>Child's Class:</strong> <%= @order.kid_class %></li>
+</ul>
+<p>We will process your order soon!</p>

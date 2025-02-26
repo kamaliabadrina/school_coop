@@ -19,6 +19,7 @@ module SchoolCooperative
 
     config.assets.compile = true
     config.assets.digest = true
+    config.active_job.queue_adapter = :sidekiq
     
     # Configuration for the application, engines, and railties goes here.
     #
