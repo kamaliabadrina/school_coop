@@ -1,5 +1,23 @@
 <h1>Orders</h1>
 
+<div class="mb-4 d-flex justify-content-between">
+  <!-- Card for Total Earnings This Month -->
+  <div class="card text-white bg-primary" style="width: 45%;">
+    <div class="card-body">
+      <h5 class="card-title">Total Earnings This Month:</h5>
+      <p class="card-text"><strong><%= number_to_currency(@monthly_earnings) %></strong></p>
+    </div>
+  </div>
+
+  <!-- Card for Total Earnings Today -->
+  <div class="card text-white bg-success" style="width: 45%;">
+    <div class="card-body">
+      <h5 class="card-title">Total Earnings Today:</h5>
+      <p class="card-text"><strong><%= number_to_currency(@daily_earnings) %></strong></p>
+    </div>
+  </div>
+</div>
+
 <%= form_with url: orders_path, method: :get, local: true do %>
   <div class="input-group mb-3">
     <input type="text" name="search" class="form-control" placeholder="Search orders..." value="<%= params[:search] %>">
@@ -7,6 +25,7 @@
   </div>
 <% end %>
 
+<!-- Orders table -->
 <table class="table">
   <thead>
     <tr>
@@ -17,7 +36,7 @@
       <th>Quantity</th>
       <th>Options</th>
       <th>Status</th>
-      <th>Actions</th> <!-- Add actions column -->
+      <th>Actions</th>
       <th>Created At</th>
     </tr>
   </thead>

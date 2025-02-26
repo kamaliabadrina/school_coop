@@ -34,6 +34,7 @@
               <%= link_to "Edit", edit_product_path(@product), class: "btn btn-primary" %>
               <%= link_to "Delete", @product, method: :delete, data: { confirm: "Are you sure?" }, class: "btn btn-danger" %>
             <% else %>
+            
               <!-- Show Buy Now button for unsigned-in users -->
               <%= form_with url: buy_product_path(@product), method: :post, scope: :order, local: true do |form| %>
                 <div class="form-group">

@@ -59,7 +59,6 @@ class ProductsController < ApplicationController
     end
   end
 
-  # POST /products/1/buy
  # POST /products/1/buy
   def buy
     Rails.logger.info("Received parameters: #{params.inspect}")
