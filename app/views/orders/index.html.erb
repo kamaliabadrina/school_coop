@@ -25,56 +25,56 @@
   </div>
 <% end %>
 
-<!-- Orders table -->
-<table class="table">
-  <thead>
-    <tr>
-      <th>Child's Name</th>
-      <th>Child's Class</th>
-      <th>Email</th>
-      <th>Payment Information</th>
-      <th>Product</th>
-      <th>Price</th>
-      <th>Quantity</th>
-      <th>Options</th>
-      <th>Status</th>
-      <th>Actions</th>
-      <th>Created At</th>
-    </tr>
-  </thead>
-  <tbody>
-    <% @orders.each do |order| %>
+<% @grouped_orders.each do |product_name, orders| %>
+  <h3><%= product_name %></h3>
+  <!-- Orders table for this product -->
+  <table class="table">
+    <thead>
       <tr>
-        <td><%= order.kid_name %></td>
-        <td><%= order.kid_class %></td>
-        <td><%= order.email %></td>
-        <td><%= order.payment_info %></td>
-        <td><%= order.product.name %></td>
-        <td><%= order.product.price %></td>
-        <td><%= order.quantity %></td>
-        <td>
-          <% if order.options.present? && order.options != "{}" %>
-              <p><strong>Selected Options:</strong></p>
-<ul>
-  <% if order.options.present? %>
-    <li><%= order.options %></li> 
-  <% else %>
-    <li>No options selected</li>
-  <% end %>
-</ul>
-
-          <% else %>
-              <p>No options selected.</p>
-          <% end %>
-        </td>
-        <td><%= order.status %></td>
-        <td>
-          <% if order.status == 'pending' %>
-            <%= button_to 'Mark as Complete', update_status_order_path(order), method: :patch, data: { confirm: 'Are you sure you want to mark this order as complete?' } %>
-          <% end %>
-        </td>
-        <td><%= order.created_at.strftime("%B %d, %Y") %></td>
+        <th>Child's Name</th>
+        <th>Child's Class</th>
+        <th>Email</th>
+        <th>Payment Information</th>
+        <th>Price</th>
+        <th>Quantity</th>
+        <th>Options</th>
+        <th>Status</th>
+        <th>Actions</th>
+        <th>Created At</th>
       </tr>
-    <% end %>
-  </tbody>
-</table>
+    </thead>
+    <tbody>
+      <% orders.each do |order| %>
+        <tr>
+          <td><%= order.kid_name %></td>
+          <td><%= order.kid_class %></td>
+          <td><%= order.email %></td>
+          <td><%= order.payment_info %></td>
+          <td><%= order.product.price %></td>
+          <td><%= order.quantity %></td>
+          <td>
+            <% if order.options.present? && order.options != "{}" %>
+                <p><strong>Selected Options:</strong></p>
+                <ul>
+                  <% if order.options.present? %>
+                    <li><%= order.options %></li> 
+                  <% else %>
+                    <li>No options selected</li>
+                  <% end %>
+                </ul>
+            <% else %>
+                <p>No options selected.</p>
+            <% end %>
+          </td>
+          <td><%= order.status %></td>
+          <td>
+            <% if order.status == 'pending' %>
+              <%= button_to 'Mark as Complete', update_status_order_path(order), method: :patch, data: { confirm: 'Are you sure you want to mark this order as complete?' } %>
+            <% end %>
+          </td>
+          <td><%= order.created_at.strftime("%B %d, %Y") %></td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+<% end %>
