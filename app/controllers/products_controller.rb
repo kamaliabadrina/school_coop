@@ -5,6 +5,12 @@ class ProductsController < ApplicationController
   # GET /products or /products.json
   def index
     @products = Product.all
+    if user_signed_in? # Only admins can sign in
+      @available_products = Product.where("stock > ?", 0)
+      @sold_out_products = Product.where(stock: 0)
+    else
+      @available_products = Product.where("stock > ?", 0)
+    end
   end
 
   # GET /products/1 or /products/1.json
@@ -59,29 +65,35 @@ class ProductsController < ApplicationController
     end
   end
 
- # POST /products/1/buy
- def buy
-  Rails.logger.info("Received parameters: #{params.inspect}")
-
-  @order = Order.new(order_params)
-  @order.product = @product 
-  @order.price = @order.product.price
-
-  selected_options = params[:order][:options] || {} # Assuming options are passed as params
-
-  if @order.save
-    Rails.logger.debug "Order Params: #{order_params.inspect}"
-    Rails.logger.debug "Order Options: #{selected_options.inspect}"
-
-    @order.options = params[:order][:options].to_s.strip  # Ensures it's stored as a clean string
-
-    # Send order confirmation email in background
-    OrderConfirmationJob.perform_later(@order.id)
-    redirect_to success_orders_path, notice: "Order was successfully placed. A confirmation email has been sent."
-  else
-    render :new, status: :unprocessable_entity
+  def buy
+    Rails.logger.info("Received parameters: #{params.inspect}")
+  
+    quantity = params[:order][:quantity].to_i
+  
+    # Check if enough stock is available
+    if @product.stock < quantity
+      redirect_to @product, alert: "Not enough stock available."
+      return
+    end
+  
+    @order = Order.new(order_params)
+    @order.product = @product 
+    @order.price = @order.product.price * quantity
+  
+    if @order.save
+      # Deduct stock after successful order creation
+      @product.update(stock: @product.stock - quantity)
+  
+      Rails.logger.debug "Order Params: #{order_params.inspect}"
+      Rails.logger.debug "Updated Stock: #{@product.stock}"
+  
+      OrderConfirmationJob.perform_later(@order.id)
+      redirect_to success_orders_path, notice: "Order was successfully placed. A confirmation email has been sent."
+    else
+      render :new, status: :unprocessable_entity
+    end
   end
-end
+  
 
   private
 
