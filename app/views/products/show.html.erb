@@ -12,7 +12,7 @@
       <div class="col-12 col-md-8">
         <div class="card-body">
           <h4 class="card-title"><%= @product.name %></h4>
-          <p class="card-text"><strong>Price:</strong> <%= number_to_currency(@product.price) %></p>
+          <p class="card-text"><strong>Price:</strong> <span id="unit-price"><%= number_to_currency(@product.price) %></span></p>
           <p class="card-text"><strong>Stock:</strong> <%= @product.stock %></p>
 
           <!-- Always display product options -->
@@ -34,7 +34,6 @@
               <%= link_to "Edit", edit_product_path(@product), class: "btn btn-primary" %>
               <%= link_to "Delete", @product, method: :delete, data: { confirm: "Are you sure?" }, class: "btn btn-danger" %>
             <% else %>
-            
               <!-- Show Buy Now button for unsigned-in users -->
               <%= form_with url: buy_product_path(@product), method: :post, scope: :order, local: true do |form| %>
                 <div class="form-group">
@@ -53,8 +52,8 @@
                 </div>
 
                 <div class="form-group">
-                    <%= form.label :email, "Your Email" %>
-                    <%= form.email_field :email, class: "form-control", required: true %>
+                  <%= form.label :email, "Your Email" %>
+                  <%= form.email_field :email, class: "form-control", required: true %>
                 </div>
 
                 <% if @product.product_options.any? %>
@@ -63,7 +62,7 @@
                     <p><strong><%= option.name %>:</strong></p>
                     <% option.product_option_values.each do |value| %>
                       <label>
-                        <%= form.radio_button "order[options][#{option.name}]", value.value %>
+                          <%= form.radio_button :options, { option.name => value.value } %>
                         <%= value.value %>
                       </label><br>
                     <% end %>
@@ -72,7 +71,14 @@
 
                 <div class="form-group">
                   <%= form.label :quantity, "Quantity" %>
-                  <%= form.number_field :quantity, value: 1, min: 1, class: "form-control", required: true %>
+                  <%= form.number_field :quantity, value: 1, min: 1, class: "form-control", required: true, id: 'quantity' %>
+                </div>
+
+                <div class="mt-3">
+                  <h5>Total Summary</h5>
+                  <p><strong>Unit Price:</strong> <span id="unit-price-display"><%= number_to_currency(@product.price) %></span></p>
+                  <p><strong>Quantity:</strong> <span id="quantity-display">1</span></p>
+                  <p><strong>Total Price:</strong> <span id="total-price"><%= number_to_currency(@product.price) %></span></p>
                 </div>
 
                 <div class="mt-2">
@@ -119,3 +125,27 @@
     </div>
   </div>
 </div>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function() {
+    const quantityInput = document.getElementById('quantity');
+    const totalPriceElement = document.getElementById('total-price');
+    const quantityDisplay = document.getElementById('quantity-display');
+    const unitPrice = <%= @product.price %>;
+    
+    function calculateTotalPrice() {
+      const quantity = parseInt(quantityInput.value, 10) || 1; // Default to 1 if NaN
+      const totalPrice = unitPrice * quantity;
+      totalPriceElement.innerText = new Intl.NumberFormat('en-US', {
+        style: 'currency',
+        currency: 'MYR'
+      }).format(totalPrice);
+      quantityDisplay.innerText = quantity; // Update the quantity display
+    }
+
+    quantityInput.addEventListener('input', calculateTotalPrice);
+
+    // Call once on page load to set initial value
+    calculateTotalPrice();
+  });
+</script>

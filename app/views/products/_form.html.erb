@@ -31,9 +31,9 @@
   </div>
 
   <div id="options">
-    <h3>Product Options</h3>
-    <%= form.fields_for :product_options do |option_form| %>
-      <div class="option">
+    <h3>Product Option</h3>
+    <div class="option">
+      <%= form.fields_for :product_options do |option_form| %>
         <%= option_form.label :name, "Option Name" %>
         <%= option_form.text_field :name %>
 
@@ -52,8 +52,8 @@
         <button type="button" class="add_value">Add Value</button>
         <%= option_form.check_box :_destroy %>
         <%= option_form.label :_destroy, "Remove this option" %>
-      </div>
-    <% end %>
+      <% end %>
+    </div>
   </div>
 
   <button type="button" id="add_option">Add Option</button>
@@ -64,36 +64,50 @@
 <% end %>
 
 <script>
-document.getElementById("add_option").addEventListener("click", function() {
-  const optionsDiv = document.getElementById("options");
-  const newOption = document.createElement("div");
-  newOption.classList.add("option");
-  newOption.innerHTML = `
-    <label>Option Name</label>
-    <input type="text" name="product[product_options_attributes][][name]">
-    <h4>Values</h4>
-    <div class="option_values">
-      <input type="text" name="product[product_options_attributes][][product_option_values_attributes][][value]" placeholder="Value">
-    </div>
-    <button type="button" class="add_value">Add Value</button>
-    <input type="checkbox" name="product[product_options_attributes][][_destroy]"> Remove this option
-  `;
-  optionsDiv.appendChild(newOption);
-});
+document.addEventListener("DOMContentLoaded", function () {
+  let optionAdded = false; // Track if the option has been added
 
-// Add event listener for dynamically added "Add Value" buttons
-document.addEventListener('click', function(event) {
-  if (event.target.classList.contains('add_value')) {
-    const optionDiv = event.target.closest('.option');
-    const valuesDiv = optionDiv.querySelector('.option_values');
-    const newValue = document.createElement('div');
-    newValue.classList.add('value');
-    newValue.innerHTML = `
-      <label>Value</label>
-      <input type="text" name="product[product_options_attributes][][product_option_values_attributes][][value]" placeholder="Value">
-      <input type="checkbox" name="product[product_options_attributes][][product_option_values_attributes][][_destroy]"> Remove this value
-    `;
-    valuesDiv.appendChild(newValue);
-  }
+  document.getElementById("add_option").addEventListener("click", function () {
+    if (!optionAdded) {
+      const optionsDiv = document.getElementById("options");
+      const newOption = document.createElement("div");
+      newOption.classList.add("option");
+      newOption.innerHTML = `
+        <h4>Single Product Option</h4>
+        <label>Option Name</label>
+        <input type="text" name="product[product_options_attributes][0][name]">
+        <h4>Values</h4>
+        <div class="option_values">
+          <div class="value">
+            <label>Value</label>
+            <input type="text" name="product[product_options_attributes][0][product_option_values_attributes][0][value]">
+            <input type="checkbox" name="product[product_options_attributes][0][product_option_values_attributes][0][_destroy]"> Remove this value
+          </div>
+        </div>
+        <button type="button" class="add_value">Add Value</button>
+      `;
+      optionsDiv.appendChild(newOption);
+      optionAdded = true; // Mark option as added
+    } else {
+      alert("Only one product option is allowed.");
+    }
+  });
+
+  // Add event listener for dynamically added "Add Value" buttons
+  document.addEventListener("click", function (event) {
+    if (event.target.classList.contains("add_value")) {
+      const valuesDiv = event.target.previousElementSibling; // Get the values div
+      const valueCount = valuesDiv.querySelectorAll(".value").length; // Get the count of existing values
+
+      const newValue = document.createElement("div");
+      newValue.classList.add("value");
+      newValue.innerHTML = `
+        <label>Value</label>
+        <input type="text" name="product[product_options_attributes][0][product_option_values_attributes][${valueCount}][value]">
+        <input type="checkbox" name="product[product_options_attributes][0][product_option_values_attributes][${valueCount}][_destroy]"> Remove this value
+      `;
+      valuesDiv.appendChild(newValue);
+    }
+  });
 });
 </script>

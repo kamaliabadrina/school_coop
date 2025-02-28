@@ -45,6 +45,18 @@ class CartsController < ApplicationController
   
     redirect_to cart_path, notice: "Product added to cart!"
   end
+
+  def create_order
+    @order = Order.new(order_params)
+    @order.user = current_user
+    @order.cart_items = @cart.cart_items
+    if @order.save
+      @cart.cart_items.destroy_all  # Clear the cart after successful order
+      redirect_to order_success_path
+    else
+      render :checkout
+    end
+  end
   
   def remove_item
     if user_signed_in?

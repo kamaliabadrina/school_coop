@@ -53,12 +53,18 @@
         <td><%= order.product.price %></td>
         <td><%= order.quantity %></td>
         <td>
-          <% if order.options.present? %>
-            <% order.options.each do |option, value| %>
-              <p><strong><%= option %>:</strong> <%= value %></p>
-            <% end %>
+          <% if order.options.present? && order.options != "{}" %>
+              <p><strong>Selected Options:</strong></p>
+<ul>
+  <% if order.options.present? %>
+    <li><%= order.options %></li> 
+  <% else %>
+    <li>No options selected</li>
+  <% end %>
+</ul>
+
           <% else %>
-            <p>No options selected</p>
+              <p>No options selected.</p>
           <% end %>
         </td>
         <td><%= order.status %></td>

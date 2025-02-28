@@ -4,7 +4,7 @@ Rails.application.routes.draw do
 
   resources :users  
   resources :products
-  resources :orders, only: [:index, :new, :create, :edit, :update, :destroy] do
+  resources :orders, only: [:index, :new, :create, :edit, :update, :destroy ] do
     collection do
       get :success
     end

@@ -1,12 +1,49 @@
-<h1>Order Confirmation</h1>
-<p>Dear Parent,</p>
-<p>Thank you for your order!</p>
-<p><strong>Order Details:</strong></p>
-<ul>
-  <li><strong>Product:</strong> <%= @order.product.name %></li>
-  <li><strong>Quantity:</strong> <%= @order.quantity %></li>
-  <li><strong>Price:</strong> <%= number_to_currency(@order.price) %></li>
-  <li><strong>Child's Name:</strong> <%= @order.kid_name %></li>
-  <li><strong>Child's Class:</strong> <%= @order.kid_class %></li>
-</ul>
-<p>We will process your order soon!</p>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Order Confirmation</title>
+  <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+  <div class="container mt-5">
+    <div class="card">
+      <div class="card-header bg-primary text-white">
+        <h2 class="mb-0">Order Confirmation</h2>
+      </div>
+      <div class="card-body">
+        <p>Dear Parent,</p>
+        <p>Thank you for your order!</p>
+        <h5><strong>Order Details:</strong></h5>
+        <ul class="list-unstyled">
+          <li><strong>Product:</strong> <%= @order.product.name %></li>
+          <li><strong>Options:</strong> <%= @order.options %></li> 
+          <li><strong>Quantity:</strong> <span id="quantity-display"><%= @order.quantity %></span></li>
+          <li><strong>Unit Price:</strong> <span id="unit-price"><%= number_to_currency(@order.product.price) %></span></li>
+          <li><strong>Total Price:</strong> <span id="total-price"><%= number_to_currency(@order.product.price * @order.quantity) %></span></li>
+          <li><strong>Child's Name:</strong> <%= @order.kid_name %></li>
+          <li><strong>Child's Class:</strong> <%= @order.kid_class %></li>
+        </ul>
+        <p class="mt-4">Please pickup your order in store.</p>
+      </div>
+      <div class="card-footer text-muted">
+        Thank you for shopping with us!
+      </div>
+    </div>
+  </div>
+
+  <!-- Add JavaScript for recalculating total price -->
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+      const quantity = <%= @order.quantity %>;
+      const unitPrice = <%= @order.product.price %>;
+      const totalPrice = quantity * unitPrice;
+      document.getElementById('total-price').innerText = new Intl.NumberFormat('en-US', {
+        style: 'currency',
+        currency: 'MYR'
+      }).format(totalPrice);
+    });
+  </script>
+</body>
+</html>
