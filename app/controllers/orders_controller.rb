@@ -5,17 +5,16 @@ class OrdersController < ApplicationController
   # GET /orders
   def index
     @orders = Order.includes(:product)  # Eager load products to avoid N+1 queries
-    all_orders = Order.includes(:product) # Keep all orders for earnings calculation
-
+    
     # Specify orders.created_at to avoid ambiguity
-    @total_earnings_today = all_orders.where("orders.created_at >= ?", Time.current.beginning_of_day)
-                                      .joins(:product)
-                                      .sum("products.price * orders.quantity")
-
-    @total_earnings_this_month = all_orders.where("orders.created_at >= ?", Time.current.beginning_of_month)
-                                           .joins(:product)
-                                           .sum("products.price * orders.quantity")
-
+    @total_earnings_today = @orders.where("orders.created_at >= ?", Time.current.beginning_of_day)
+                                   .sum { |order| order.product.price * order.quantity }
+  
+    @total_earnings_this_month = @orders.where("orders.created_at >= ?", Time.current.beginning_of_month)
+                                        .sum { |order| order.product.price * order.quantity }
+  
+    @all_orders = @orders.dup
+  
     # If a search term is present, filter the orders
     if params[:search].present?
       search_term = "%#{params[:search]}%"
@@ -24,10 +23,16 @@ class OrdersController < ApplicationController
         search_term, search_term, search_term, search_term
       )
     end
-
+  
+    # Fix ambiguity in created_at column
+    @monthly_earnings = @orders.sum { |order| order.product.price * order.quantity }
+    @daily_earnings = @orders.where("orders.created_at >= ?", Time.zone.now.beginning_of_day)
+                             .sum { |order| order.product.price * order.quantity }
+  
     # Group orders by product name
     @grouped_orders = @orders.group_by { |order| order.product.name }
   end
+  
 
   protect_from_forgery except: :paymentredirect # Allow SecurePay callback
 
