@@ -67,11 +67,7 @@
             <% end %>
           </td>
           <td><%= order.status %></td>
-          <td>
-            <% if order.status == 'pending' %>
-              <%= button_to 'Mark as Complete', update_status_order_path(order), method: :patch, data: { confirm: 'Are you sure you want to mark this order as complete?' } %>
-            <% end %>
-          </td>
+         
           <td><%= order.created_at.strftime("%B %d, %Y") %></td>
         </tr>
       <% end %>
