@@ -12,6 +12,10 @@ Rails.application.routes.draw do
 
   resource :profile, only: [:show, :edit, :update]
 
+  resources :orders do
+    post 'paymentredirect', on: :member
+  end  
+
   # Cart Routes
   resource :cart, only: [:show] do
     post 'add_item', to: 'carts#add_item'
@@ -29,5 +33,6 @@ Rails.application.routes.draw do
     mount LetterOpenerWeb::Engine, at: "/letter_opener"
   end
 
+  get 'orders/:id/payment_failed', to: 'orders#payment_failed', as: 'payment_failed'
   get "up" => "rails/health#show", as: :rails_health_check
 end

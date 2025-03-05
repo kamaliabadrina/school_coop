@@ -46,15 +46,18 @@
                   <%= form.text_field :kid_class, class: "form-control", required: true %>
                 </div>
 
-                <div class="form-group">
-                  <%= form.label :payment_info, "Payment Information" %>
-                  <%= form.text_field :payment_info, class: "form-control", required: true %>
+                <!-- New Phone Number Field -->
+                  <div class="form-group">
+                  <%= form.label :phone_number, "Phone Number" %>
+                  <%= form.telephone_field :phone_number, class: "form-control", required: true, placeholder: "Enter your phone number" %>
                 </div>
 
                 <div class="form-group">
                   <%= form.label :email, "Your Email" %>
                   <%= form.email_field :email, class: "form-control", required: true %>
                 </div>
+
+              
 
                 <% if @product.product_options.any? %>
                   <h5>Select Options:</h5>

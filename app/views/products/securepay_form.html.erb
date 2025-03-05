@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Redirecting to SecurePay...</title>
+  </head>
+  <body onload="document.forms['securepay_form'].submit();">
+    <p>Redirecting to payment gateway, please wait...</p>
+
+    <form name="securepay_form" method="POST" action="https://sandbox.securepay.my/api/v1/payments">
+      <% @payment_params.each do |key, value| %>
+        <input type="hidden" name="<%= key %>" value="<%= value %>">
+      <% end %>
+      <noscript>
+        <button type="submit">Click here if you are not redirected.</button>
+      </noscript>
+    </form>
+  </body>
+</html>
