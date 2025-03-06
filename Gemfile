@@ -71,3 +71,4 @@ end
 
 gem 'devise'
 gem 'sidekiq'
+gem 'eye'

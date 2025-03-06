@@ -1,37 +1,38 @@
-<%= form_with(model: user) do |form| %>
-  <% if user.errors.any? %>
-    <div style="color: red">
-      <h2><%= pluralize(user.errors.count, "error") %> prohibited this user from being saved:</h2>
+<%= form_with(model: user, class: "card p-4 shadow-lg", style: "max-width: 400px; margin: auto;") do |form| %>
+  <h2 class="text-center mb-4">Login</h2>
 
+  <% if user.errors.any? %>
+    <div class="alert alert-danger">
+      <h4><%= pluralize(user.errors.count, "error") %> prevented this user from being saved:</h4>
       <ul>
-        <% user.errors.each do |error| %>
-          <li><%= error.full_message %></li>
+        <% user.errors.full_messages.each do |message| %>
+          <li><%= message %></li>
         <% end %>
       </ul>
     </div>
   <% end %>
 
-  <div>
-    <%= form.label :name, style: "display: block" %>
-    <%= form.text_field :name %>
+  <div class="mb-3">
+    <%= form.label :email, "Email Address", class: "form-label" %>
+    <%= form.text_field :email, class: "form-control", placeholder: "Enter your email", required: true %>
   </div>
 
-  <div>
-    <%= form.label :email, style: "display: block" %>
-    <%= form.text_field :email %>
+  <div class="mb-3">
+    <%= form.label :password, "Password", class: "form-label" %>
+    <%= form.password_field :password, class: "form-control", placeholder: "Enter your password", required: true %>
   </div>
 
-  <div>
-    <%= form.label :password_digest, style: "display: block" %>
-    <%= form.text_field :password_digest %>
+  <div class="mb-3 form-check">
+    <%= form.check_box :remember_me, class: "form-check-input" %>
+    <%= form.label :remember_me, "Remember me", class: "form-check-label" %>
   </div>
 
-  <div>
-    <%= form.label :role, style: "display: block" %>
-    <%= form.text_field :role %>
+  <div class="d-grid">
+    <%= form.submit "Login", class: "btn btn-primary btn-block" %>
   </div>
 
-  <div>
-    <%= form.submit %>
+  <div class="text-center mt-3">
+    <p>Don't have an account? <%= link_to "Sign up", new_user_registration_path, class: "text-decoration-none" %></p>
+    <p><%= link_to "Forgot your password?", new_password_path, class: "text-decoration-none" %></p>
   </div>
 <% end %>

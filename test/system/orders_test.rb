@@ -16,7 +16,7 @@ class OrdersTest < ApplicationSystemTestCase
 
     fill_in "Product", with: @order.product_id
     fill_in "Quantity", with: @order.quantity
-    fill_in "Status", with: @order.status
+    fill_in "Status", with: @order.payment_status
     fill_in "User", with: @order.user_id
     click_on "Create Order"
 
@@ -30,7 +30,7 @@ class OrdersTest < ApplicationSystemTestCase
 
     fill_in "Product", with: @order.product_id
     fill_in "Quantity", with: @order.quantity
-    fill_in "Status", with: @order.status
+    fill_in "Status", with: @order.payment_status
     fill_in "User", with: @order.user_id
     click_on "Update Order"
 

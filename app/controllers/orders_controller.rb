@@ -19,7 +19,7 @@ class OrdersController < ApplicationController
     if params[:search].present?
       search_term = "%#{params[:search]}%"
       @orders = @orders.joins(:product).where(
-        "orders.kid_name ILIKE ? OR orders.kid_class ILIKE ? OR orders.status ILIKE ? OR products.name ILIKE ?",
+        "orders.kid_name ILIKE ? OR orders.kid_class ILIKE ? OR orders.payment_status ILIKE ? OR products.name ILIKE ?",
         search_term, search_term, search_term, search_term
       )
     end
@@ -28,9 +28,10 @@ class OrdersController < ApplicationController
     @monthly_earnings = @orders.sum { |order| order.product.price * order.quantity }
     @daily_earnings = @orders.where("orders.created_at >= ?", Time.zone.now.beginning_of_day)
                              .sum { |order| order.product.price * order.quantity }
-  
+
     # Group orders by product name
     @grouped_orders = @orders.group_by { |order| order.product.name }
+    
   end
   
 
@@ -39,33 +40,34 @@ class OrdersController < ApplicationController
   def paymentredirect
     Rails.logger.info "✅ Received SecurePay Payment Callback: #{params.inspect}"
   
-    # Validate SecurePay response
+    order = Order.find_by(id: params[:order_number])  # Find the existing order
+  
+    if order.nil?
+      Rails.logger.error "❌ Order not found for ID: #{params[:order_number]}"
+      redirect_to root_path, alert: "Order not found."
+      return
+    end
+  
     if params[:status] == "success" && params[:transaction_id].present?
-      # Create and save the order now
-      order = Order.create!(
-        product_id: params[:product_id], 
-        kid_name: params[:buyer_name], 
-        phone_number: params[:buyer_phone], 
-        price: params[:transaction_amount], 
-        status: "paid",
+      order.update!(
+        payment_status: "paid",
         payment_reference: params[:transaction_id]
       )
   
-      Rails.logger.info "✅ Payment successful, Order #{order.id} saved!"
+      OrderConfirmationJob.perform_later(order.id)  # Now order.id exists ✅
+  
+      Rails.logger.info "✅ Payment successful, Order #{order.id} updated to 'paid'!"
       redirect_to order_path(order), notice: "Payment processed successfully!"
     else
+      order.update!(payment_status: "failed")  # Mark as failed if payment was not successful
       Rails.logger.error "❌ Payment failed"
       redirect_to payment_failed_path, alert: "Payment failed. Please try again."
     end
-  end
+  end  
   
 
   # GET /orders/success
   def success
-  end
-
-  def payment_failed
-    @order = Order.find(params[:id])
   end
   
 

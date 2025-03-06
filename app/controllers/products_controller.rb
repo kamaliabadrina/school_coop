@@ -122,7 +122,7 @@ class ProductsController < ApplicationController
     @order = Order.new(order_params)
     @order.product = @product 
     @order.price = @order.product.price * quantity
-    @order.status = "pending"  # Order is not paid yet
+    @order.payment_status = "pending"  # Order is not paid yet
   
     if @order.save
       Rails.logger.debug "Order Params: #{order_params.inspect}"
@@ -138,7 +138,7 @@ class ProductsController < ApplicationController
         transaction_amount: @order.price,
         product_description: @order.product.name,
         callback_url: "",
-        redirect_url: "http://kamalia.p.my/orders/#{@order.id}/paymentredirect",
+        redirect_url: "http://localhost:3000/orders/#{@order.id}/paymentredirect",
         uid: 'b66c2a38-52f5-4e34-b1a3-520cf5741191',
         token: 'UTxHFAuXARwCLpespe8x',
         checksum: @order.generate_checksum,
