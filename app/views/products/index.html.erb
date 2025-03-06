@@ -11,18 +11,31 @@
 
 <hr style="border: 0.5px solid black;">
 
+<!-- Search Form -->
+<div class="mb-3">
+  <%= form_tag products_path, method: :get, class: "d-flex" do %>
+    <%= text_field_tag :search, params[:search], placeholder: "Search products...", class: "form-control me-2" %>
+    <%= submit_tag "Search", class: "btn btn-outline-primary" %>
+  <% end %>
+</div>
+
+<!-- Flash Message for Product Not Found -->
+<% if flash[:alert] %>
+  <p style="color: red;"><%= flash[:alert] %></p>
+<% end %>
+
 <div class="container">
-  <!-- Available Products for all users -->
-  <% if @products.any? %> <!-- Check if there are any products -->
+  <!-- Available Products for All Users -->
+  <% if @products.any? %> 
     <div class="row">
       <% @products.each do |product| %>
-        <% if product.stock > 0 %> <!-- Show only products with stock > 0 for all users -->
-          <div class="col-md-4 mb-4"> <!-- Adjust the column size as needed -->
+        <% if product.stock > 0 %> <!-- Only show products with stock > 0 -->
+          <div class="col-md-4 mb-4">
             <div class="card">
               <div class="card-body">
                 <% if product.image.attached? %>
                   <div class="product-image">
-                    <%= image_tag product.image, class: "img-fluid", style: "max-height: 300px; object-fit: cover;" %> <!-- Control image size -->
+                    <%= image_tag product.image, class: "img-fluid", style: "max-height: 300px; object-fit: cover;" %>
                   </div>
                 <% end %>
                 <h3 class="card-title"><%= product.name %></h3>
@@ -38,15 +51,15 @@
       <% end %>
     </div>
   <% else %>
-    <p>No products available.</p>
+    <p style="color: red;">No products available.</p>
   <% end %>
 
-  <!-- Sold Out Products for signed-in users (admins) -->
+  <!-- Sold Out Products for Signed-In Users (Admins) -->
   <% if user_signed_in? %>
     <h2 class="mt-5">Sold Out Products</h2>
     <div class="row">
       <% @products.each do |product| %>
-        <% if product.stock == 0 %> <!-- Show only sold-out products for signed-in users -->
+        <% if product.stock == 0 %> 
           <div class="col-md-4 mb-4">
             <div class="card border-danger">
               <div class="card-body">
