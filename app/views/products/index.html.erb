@@ -13,8 +13,8 @@
 
 <!-- Search Form -->
 <div class="mb-3">
-  <%= form_tag products_path, method: :get, class: "d-flex" do %>
-    <%= text_field_tag :search, params[:search], placeholder: "Search products...", class: "form-control me-2" %>
+  <%= form_tag products_path, method: :get, class: "d-flex", id: "search-form" do %>
+    <%= text_field_tag :search, params[:search], placeholder: "Search products...", class: "form-control me-2", id: "search-input" %>
     <%= submit_tag "Search", class: "btn btn-outline-primary" %>
   <% end %>
 </div>
@@ -25,60 +25,42 @@
 <% end %>
 
 <div class="container">
-  <!-- Available Products for All Users -->
-  <% if @products.any? %> 
+  <% if @products.any? %>
     <div class="row">
       <% @products.each do |product| %>
-        <% if product.stock > 0 %> <!-- Only show products with stock > 0 -->
-          <div class="col-md-4 mb-4">
-            <div class="card">
-              <div class="card-body">
-                <% if product.image.attached? %>
-                  <div class="product-image">
-                    <%= image_tag product.image, class: "img-fluid", style: "max-height: 300px; object-fit: cover;" %>
-                  </div>
-                <% end %>
-                <h3 class="card-title"><%= product.name %></h3>
-                <p class="card-text">Price: <%= number_to_currency(product.price) %></p>
-                <p class="card-text">Stock: <%= product.stock %></p>
-                <p>
-                  <%= link_to "Show this product", product, class: "btn btn-primary" %>
-                </p>
-              </div>
+        <div class="col-md-4 mb-4">
+          <div class="card">
+            <div class="card-body">
+              <% if product.image.attached? %>
+                <div class="product-image">
+                  <%= image_tag product.image, class: "img-fluid", style: "max-height: 300px; object-fit: cover;" %>
+                </div>
+              <% end %>
+              <h3 class="card-title"><%= product.name %></h3>
+              <p class="card-text">Price: <%= number_to_currency(product.price) %></p>
+              <p class="card-text">Stock: <%= product.stock %></p>
+              <p>
+                <%= link_to "Show this product", product, class: "btn btn-primary" %>
+              </p>
             </div>
           </div>
-        <% end %>
+        </div>
       <% end %>
     </div>
   <% else %>
     <p style="color: red;">No products available.</p>
   <% end %>
-
-  <!-- Sold Out Products for Signed-In Users (Admins) -->
-  <% if user_signed_in? %>
-    <h2 class="mt-5">Sold Out Products</h2>
-    <div class="row">
-      <% @products.each do |product| %>
-        <% if product.stock == 0 %> 
-          <div class="col-md-4 mb-4">
-            <div class="card border-danger">
-              <div class="card-body">
-                <% if product.image.attached? %>
-                  <div class="product-image">
-                    <%= image_tag product.image, class: "img-fluid", style: "max-height: 300px; object-fit: cover;" %>
-                  </div>
-                <% end %>
-                <h3 class="card-title text-danger"><%= product.name %> (Sold Out)</h3>
-                <p class="card-text">Price: <%= number_to_currency(product.price) %></p>
-                <p class="card-text text-danger">Stock: 0</p>
-                <p>
-                  <%= link_to "Show this product", product, class: "btn btn-danger" %>
-                </p>
-              </div>
-            </div>
-          </div>
-        <% end %>
-      <% end %>
-    </div>
-  <% end %>
 </div>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function() {
+    const searchInput = document.getElementById("search-input");
+    const searchForm = document.getElementById("search-form");
+
+    searchInput.addEventListener("input", function() {
+      if (searchInput.value.trim() === "") {
+        searchForm.submit(); // Automatically submit form when input is cleared
+      }
+    });
+  });
+</script>
